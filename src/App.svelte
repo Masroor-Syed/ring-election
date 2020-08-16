@@ -9,7 +9,8 @@
   let processViews;
   let black = "black";
   let red = "red";
-  $: sim = new Simulation(pcount,starter);
+  $: sim = new Simulation(pcount, starter, processNames);
+  let pNames = "1,2,3,4";
 
   function getViewsFrom(s) {
     if (sim) {
@@ -22,6 +23,8 @@
 
   // get process info for rendering
   $: processViews = [...getViewsFrom(sim)];
+  console.log(pNames.split(",").map(Number));
+  $: processNames = pNames.split(",").map(Number);
 
   function handleClick() {
     sim.step();
@@ -57,6 +60,10 @@
   let w_width = 1024;
   let w_height = 768;
   $: svg_side = Math.min(w_width - 300, w_height);
+
+  function getProcessNames() {
+    console.log(processNames);
+  }
 </script>
 
 <style>
@@ -132,13 +139,11 @@
     margin: 0 auto;
   }
 
-  h1 {
-    color: #ff3e00;
+  h3 {
     text-transform: uppercase;
-    font-size: 4em;
     font-weight: 100;
     text-align: center;
-    margin : 0;
+    margin: 0;
   }
   #container {
     display: flex;
@@ -152,7 +157,14 @@
 <main>
 
   <div>
-    <h1>Ring Election Simulation</h1> 
+    <h3>
+      <b>
+        Basic Distributed Algorithms Visual Simulations for Distributed Systems
+        Students
+        <br />
+        Ring Election Algorithm
+      </b>
+    </h3>
   </div>
 
   <div id="container">
@@ -176,19 +188,22 @@
           xloc={450 + 250 * Math.sin(((2 * Math.PI) / pcount) * i)}
           yloc={300 + 250 * -Math.cos(((2 * Math.PI) / pcount) * i)} />
 
-        <!-- arrow logic TODO  -->
         {#if p.active}
-          <Arrow from={p.id-1} to={p.id} color={red} {pcount} text={p.cur_msg} />
+          <Arrow
+            from={p.id - 1}
+            to={p.id}
+            color={red}
+            {pcount}
+            text={p.cur_msg} />
         {:else}
-          <Arrow from={p.id-1} to={p.id} color={black} {pcount} text={""}/>
+          <Arrow from={p.id - 1} to={p.id} color={black} {pcount} text={''} />
         {/if}
 
         <!-- <Arrow from={3} to={0} color={black} {pcount} /> -->
-
       {/each}
     </svg>
     <div id="options">
-      <h2>Options</h2>
+      <h4>Options</h4>
       <div id="procs" class="option">
         <b># Processes:</b>
         <div>
@@ -197,8 +212,26 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label>
+          <b>Processes ids in the election</b>
+        </label>
+        <!-- 5,9,3,10,6,1,7,4,2,8 -->
+        <input
+          on:input={getProcessNames}
+          bind:value={pNames}
+          type="text"
+          placeholder="eg. 1,2,3,4,5" />
+
+        <!-- {#each processViews as p, i}
+          <p>{p.name}</p>
+          <br />
+        {/each} -->
+
+      </div>
+
       <div id="times" class="option">
-        <b>Process starting election</b>
+        <b>Process starting the election</b>
         <div id="code">
           <div class="range">
             <input type="number" bind:value={starter} min={2} max={pcount} />
@@ -244,12 +277,12 @@
   </div>
 
   <div>
-    <h2> Process Messages </h2>
+    <h4>Process Messages</h4>
     <div id="msgs" class="option">
-        {#each processViews as p, i}
-          <p>{p.name}: {p.text}</p>
-        {/each}
-      </div>
+      {#each processViews as p, i}
+        <p>{p.name}: {p.allMsgs}</p>
+      {/each}
+    </div>
   </div>
 
 </main>

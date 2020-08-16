@@ -27,7 +27,7 @@
     return point;
   }
 
-  function getArrowStartEnd(from, to,pcount) {
+  function getArrowStartEnd(from, to, pcount) {
     let a = pcount;
     let outerRadiusDiff = 50;
     let r = 250;
@@ -49,27 +49,25 @@
   let outerRadiusDiff = 50;
   let r = 250;
 
-  $: arrow = getArrowStartEnd(from, to,pcount);
+  $: arrow = getArrowStartEnd(from, to, pcount);
 </script>
 
 <g>
-<path
-  id="arrow-{pid}"
-  d="M {arrow.start.x}
-  {arrow.start.y} Q {mid_pos.x}
-  {mid_pos.y}
-  {arrow.end.x}
-  {arrow.end.y}
-  "
-  stroke={color}
-  fill="transparent"
-  stroke-width="2"
-  marker-end="url(#head)" />
+  <path
+    id="arrow-{pid}"
+    d="M {arrow.start.x}
+    {arrow.start.y} Q {mid_pos.x}
+    {mid_pos.y}
+    {arrow.end.x}
+    {arrow.end.y}
+    "
+    stroke={color}
+    fill="transparent"
+    stroke-width="2"
+    marker-end="url(#head)" />
 
   <text font-size="1.5rem" text-anchor="middle" dominant-baseline="hanging">
-    <textPath startOffset="50%" href="#arrow-{pid}" >
-      {text}
-    </textPath>
+    <textPath startOffset="50%" href="#arrow-{pid}">{text}</textPath>
   </text>
 
 </g>
